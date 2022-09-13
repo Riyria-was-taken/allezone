@@ -39,15 +39,19 @@ class UserTag(BaseModel):
         return time
 
 class UserProfile(BaseModel):
-    cookie: str
-    views: List[UserTag]
-    buys: List[UserTag]
+    cookie: str = ""
+    views: List[UserTag] = []
+    buys: List[UserTag] = []
 
 class Statistics(BaseModel):
-    columns: List[str]
-    rows: List[List[str]]
+    columns: List[str] = []
+    rows: List[List[str]] = []
 
 class TimeRange:
+    def __init__(self, start, end):
+        self.start = start
+        self.end = end
+
     start: datetime
     end: datetime
 
@@ -55,8 +59,5 @@ class TimeRange:
 
 def parse_time_range(time_range: str):
     #TODO: validate
-    parts = time_range.split(separator='_')
-    ret = TimeRange()
-    ret.start = parse(parts[0])
-    ret.end = parts(parts[1])
-    return ret
+    parts = time_range.split('_', 1)
+    return TimeRange(parse(parts[0]), parse(parts[1]))

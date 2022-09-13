@@ -11,7 +11,7 @@ from datetime import timedelta
 
 ###############################################################################
 
-debug = True
+debug = False 
   
 ###############################################################################
 
@@ -50,7 +50,10 @@ def user_profile(cookie: str, time_range: str, result: UserProfile,
     if debug:
         return result
     else:
-        return compute_user_profile(cookie, parse_time_range(time_range), limit)
+        out = compute_user_profile(cookie, parse_time_range(time_range), limit)
+        print("GOOD:", result)
+        print("MINE:", out)
+        return out
 
 
 @app.post("/aggregates", response_model=Statistics)
@@ -59,7 +62,10 @@ def aggregate(time_range: str, action: Action, aggregates: List[Aggregate], resu
     if debug:
         return result
     else:
-        compute_aggregate_result(action, origin, brand_id, category_id, parse_time_range(time_range), aggregates)
+        out = compute_aggregate_result(action, origin, brand_id, category_id, parse_time_range(time_range), aggregates)
+        print("GOOD:", result)
+        print("MINE:", out)
+        return out
 
 ###############################################################################
 
@@ -68,7 +74,7 @@ def get_user_profile(cookie: str):
 
     if profile is None:
         profile = UserProfile()
-        profile.cookie = tag.cookie
+        profile.cookie = cookie
     else:
         profile = jsonpickle.decode(profile['val'])
 
@@ -78,12 +84,12 @@ def get_user_profile(cookie: str):
 def update_user_profile(tag: UserTag):
     (key, meta, profile) = get_user_profile(tag.cookie)
 
-    list_to_update = profile.views if tag.action == VIEW else profile.buys
+    list_to_update = profile.views if tag.action == Action.VIEW else profile.buys
     list_to_update.append(tag)
     list_to_update.sort(key=lambda t: parse(t.time), reverse=True)
     del list_to_update[200:]
-
-    aero_write(key, {'val': jsonpickle.encode(profile)}, gen=meta['gen'] + 1)
+    
+    aero_write(key, {'val': jsonpickle.encode(profile)}, gen=1 if meta is None else meta['gen'] + 1)
 
 
 def append_to_kafka(tag: UserTag):
@@ -99,11 +105,11 @@ def compute_user_profile(cookie: str, time_range: TimeRange, limit: int):
     (_, _, profile) = get_user_profile(cookie)
 
     def in_time_range(tag: UserTag):
-        time = parse(tag.time)
-        return start <= time_range.start and time < time_range.end
+        time = parse(tag.time).replace(tzinfo=None)
+        return time_range.start <= time and time < time_range.end
 
-    profile.views = filter(in_time_range, profile.views)
-    profile.buys= filter(in_time_range, profile.buys)
+    profile.views = list(filter(in_time_range, profile.views))
+    profile.buys = list(filter(in_time_range, profile.buys))
 
     del profile.views[:-limit]
     del profile.buys[:-limit]
@@ -161,7 +167,7 @@ def aero_read(key):
     try:
         record_tuple = client.get(key)
         return record_tuple
-    except ex.RecordNotFound as e:
+    except aerospike.exception.RecordNotFound as e:
         return (key, None, None) 
 
 
