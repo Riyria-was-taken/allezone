@@ -117,7 +117,7 @@ def get_aggregate_result(action: Action, origin: str, brand_id: str, category_id
                             time_range: TimeRange, aggregates: List[Aggregate]):
     buckets_starts = generate_bucket_starts(time_range)
 
-    bucket_base = "{}_{}_{}_{}_".format(action, origin, brand_id, category_id)
+    bucket_base = "{}_{}_{}_{}_".format(action.value, origin, brand_id, category_id)
     keys = [("allezone", "buckets", bucket_base + bucket_start) for bucket_start in buckets_starts]
     buckets = aerospike.get_many(keys)
     
@@ -178,6 +178,6 @@ def aero_write(key, bins, gen=None, attempt=1):
             print("Generation error while trying to write to Aerospike, key: {}, bins: {}, attempt: {} - abandoning".format(key, bins, attempt),
                     file=sys.stderr)
         
-    except Exception as e:
+    except aerospike.exception.AerospikeError as e:
         print("Error while trying to write to Aerospike: {}, key: {}, bins: {}".format(e, key, bins), file=sys.stderr)
 

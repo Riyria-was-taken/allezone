@@ -1,0 +1,7 @@
+pydantic
+aerospike
+kafka-python
+python-snappy
+crc32c
+jsonpickle
+python-dateutil
