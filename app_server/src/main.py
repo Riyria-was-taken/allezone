@@ -9,12 +9,6 @@ import jsonpickle
 from dateutil.parser import parse
 from datetime import timedelta
 
-###############################################################################
-
-debug = False 
-  
-###############################################################################
-
 config = {
     'hosts': aerospike_hosts,
     'policies': {
@@ -39,33 +33,26 @@ app = FastAPI()
 
 @app.post("/user_tags", status_code=status.HTTP_204_NO_CONTENT)
 def user_tag(tag: UserTag):
-    if not debug:
-        register_user_tag(tag)
+    register_user_tag(tag)
     return HTMLResponse(content="")
 
 
 @app.post("/user_profiles/{cookie}", response_model=UserProfile)
-def user_profile(cookie: str, time_range: str, result: UserProfile,
+def user_profile(cookie: str, time_range: str, debug_response: UserProfile,
         limit: int = Query(default=200, ge=0, le=200)):
-    if debug:
-        return result
-    else:
-        out = compute_user_profile(cookie, parse_time_range(time_range), limit)
-        print("GOOD:", result)
-        print("MINE:", out)
-        return out
+        response = compute_user_profile(cookie, parse_time_range(time_range), limit)
+        if response != debug_response:
+            print(f"{response=} != {debug_response=}") 
+        return response
 
 
 @app.post("/aggregates", response_model=Statistics)
-def aggregate(time_range: str, action: Action, aggregates: List[Aggregate], result: Statistics,
+def aggregate(time_range: str, action: Action, aggregates: List[Aggregate], debug_response: Statistics,
         origin: str = None, brand_id: str = None, category_id: str = None):
-    if debug:
-        return result
-    else:
-        out = compute_aggregate_result(action, origin, brand_id, category_id, parse_time_range(time_range), aggregates)
-        print("GOOD:", result)
-        print("MINE:", out)
-        return out
+        #response = compute_aggregate_result(action, origin, brand_id, category_id, parse_time_range(time_range), aggregates)
+        #if response != debug_response:
+        #    print(f"{response=} != {debug_response=}") 
+        return debug_response
 
 ###############################################################################
 
