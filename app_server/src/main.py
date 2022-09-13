@@ -24,8 +24,8 @@ except:
 
 ###############################################################################
 
-#producer = KafkaProducer(bootstrap_servers=kafka_hosts, client_id="iwi",
-#                            compression_type="snappy", linger_ms=5)
+producer = KafkaProducer(bootstrap_servers=kafka_hosts, client_id="iwi",
+                            compression_type="snappy", linger_ms=5)
 
 ###############################################################################
 
@@ -80,8 +80,8 @@ def update_user_profile(tag: UserTag):
 
 
 def append_to_kafka(tag: UserTag):
-    #    producer.send(kafka_topic, jsonpickle.encode(tag).encode('utf-8'))
-    pass
+    producer.send(kafka_topic, jsonpickle.encode(tag).encode('utf-8'))
+
 
 def register_user_tag(tag: UserTag):
     update_user_profile(tag)
