@@ -1,4 +1,23 @@
 ---
+- name: Swarm nodes leave existing swarm
+  any_errors_fatal: false
+  hosts: swarm_nodes
+  remote_user: root
+
+  tasks:
+     - name: Ensure the docker daemon is running
+       become: true
+       become_user: root
+       command: systemctl is-active docker
+       register: docker_status
+       failed_when: docker_status.stdout_lines[0] != "active"
+
+     - name: Leave existing swarm
+       become: true
+       become_user: root
+       command: docker swarm leave
+       ignore_errors: yes
+
 - name: Docker Swarm init
   any_errors_fatal: true
   hosts: swarm_manager
@@ -11,6 +30,12 @@
        command: systemctl is-active docker
        register: docker_status
        failed_when: docker_status.stdout_lines[0] != "active"
+
+     - name: Leave existing swarm
+       become: true
+       become_user: root
+       command: docker swarm leave --force
+       ignore_errors: yes
 
      - name: Init Docker Swarm
        become: true

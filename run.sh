@@ -1,5 +1,5 @@
-echo "Install ansible and sshpass..."
-sudo apt -y install ansible sshpass
+echo "Install ansible, sshpass and docker-compose..."
+sudo apt -y install ansible sshpass docker-compose
 echo "Done"
 
 echo "Add other nodes to known_hosts:"
@@ -11,8 +11,8 @@ done
 
 echo "Setup docker and docker swarm on all nodes:"
 cd ansible
-ansible-playbook --extra-vars "ansible_user=st105 ansible_password=$1" docker-playbook.yaml
-ansible-playbook --extra-vars "ansible_user=st105 ansible_password=$1" swarm-playbook.yaml
+ansible-playbook -i ./hosts --extra-vars "ansible_user=st105 ansible_password=$1" docker-playbook.yaml
+ansible-playbook -i ./hosts --extra-vars "ansible_user=st105 ansible_password=$1" swarm-playbook.yaml
 cd ..
 echo "Done"
 
@@ -28,15 +28,15 @@ echo "Install and set up weavenet docker plugin..."
 sudo docker plugin install weaveworks/net-plugin:latest_release
 sudo docker plugin disable weaveworks/net-plugin:latest_release
 sudo docker plugin set weaveworks/net-plugin:latest_release WEAVE_MULTICAST=1
-docker plugin enable weaveworks/net-plugin:latest_release
-echp "Done"
+sudo docker plugin enable weaveworks/net-plugin:latest_release
+echo "Done"
 
 echo "Build docker services..."
-sudo docker compose build
+sudo docker-compose build
 echo "Done"
 
 echo "Push built images to local registry..."
-sudo docker compose push
+sudo docker-compose push
 echo "Done"
 
 echo "Deploy allezone..."

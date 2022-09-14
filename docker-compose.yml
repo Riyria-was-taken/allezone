@@ -1,10 +1,10 @@
-version: "3.9"
+version: "3.3"
 
 services:
   app_aerospike:
     image: aerospike/aerospike-server
     volumes:
-      ./app_aerospike:/opt/aerospike/allezone
+    - ./app_aerospike:/opt/aerospike/allezone
     command:
       --config-file /opt/aerospike/allezone/aerospike.conf
       #networks:
@@ -21,7 +21,7 @@ services:
   meshworker:
     image: aerospike/aerospike-tools:latest
     volumes:
-      ./app_aerospike:/opt/aerospike/allezone
+    - ./app_aerospike:/opt/aerospike/allezone
     entrypoint:
     - /opt/aerospike/allezone/discovery
     - "--servicename"
