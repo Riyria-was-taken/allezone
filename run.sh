@@ -24,6 +24,13 @@ echo "Set current node as haproxy node..."
 sudo docker node update --label-add haproxy=true $(hostname)
 echo "Done"
 
+echo "Install and set up weavenet docker plugin..."
+sudo docker plugin install weaveworks/net-plugin:latest_release
+sudo docker plugin disable weaveworks/net-plugin:latest_release
+sudo docker plugin set weaveworks/net-plugin:latest_release WEAVE_MULTICAST=1
+docker plugin enable weaveworks/net-plugin:latest_release
+echp "Done"
+
 echo "Build docker services..."
 sudo docker compose build
 echo "Done"
@@ -37,4 +44,4 @@ sudo docker stack deploy --compose-file docker-compose.yml allezone
 echo "Done"
 
 # dockerize -wait tcp://kafka:9092 -wait web://webapp:8080
-# docker network create --driver=weaveworks/net-plugin:latest_release mynetwork
+# docker network create --driver=weaveworks/net-plugin:latest_release --attachable mynetwork
