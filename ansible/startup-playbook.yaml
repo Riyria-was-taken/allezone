@@ -5,11 +5,11 @@
   tasks:
      - name: Clone a github repository
        git:
-          repo: https://github.com/Riyria-was-taken/allezone
-          dest: /home/st105
-          clone: yes
-          update: yes
-          version: easy
+       repo: https://github.com/Riyria-was-taken/allezone
+       dest: /home/st105
+       clone: yes
+       update: yes
+       version: easy
 
 - name: Aerospike setup
   hosts: aerospike
