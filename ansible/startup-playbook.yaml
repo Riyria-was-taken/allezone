@@ -61,7 +61,8 @@
        become: true
        command:
          argv:
-           - docker run
+           - docker
+           - run
            - --name
            - app_kafka
            - --network=host
