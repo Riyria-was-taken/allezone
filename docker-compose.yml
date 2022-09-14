@@ -1,8 +1,8 @@
-version: "3.3"
+version: "3.9"
 
 services:
   app_aerospike:
-    image: aerospike/aerospike-server
+    image: aerospike/aerospike-server:latest
     volumes:
       - ./app_aerospike:/opt/aerospike/allezone
     command:
@@ -23,7 +23,8 @@ services:
     volumes:
       - ./app_aerospike:/opt/aerospike/allezone
     entrypoint:
-      - /opt/aerospike/allezone/discovery
+      - python2
+      - /opt/aerospike/allezone/discovery.py
       - "--servicename"
       - app_aerospike 
       - "-i 5"
@@ -73,9 +74,12 @@ services:
       - ./app_haproxy:/usr/local/etc/haproxy:ro
     deploy:
       placement:
-        constraints: [node.labels.haproxy == true ]
+        constraints: [ node.labels.haproxy == true ]
 
 networks:
+  default:
+    name: allezone_net
+    attachable: true
   hostnet:
     name: host
     external: true

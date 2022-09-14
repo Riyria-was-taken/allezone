@@ -143,7 +143,11 @@ def get_aggregate_result(action: Action, origin: str, brand_id: str, category_id
    
     for (i, (key, meta, values)) in buckets.items():
         for aggregare in aggregates:
-            stats.rows[i - 1].append(values[aggregates.value])
+            stats.rows[i - 1].append(values.get(aggregates.value, default=0))
+
+    for row in stats.rows:
+        if len(row) != len(stats.columns):
+            row.extend([0, 0])
 
     return stats
 

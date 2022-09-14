@@ -1,5 +1,12 @@
-echo "Install ansible, sshpass and docker-compose..."
-sudo apt -y install ansible sshpass docker-compose
+echo "Install ansible and sshpass..."
+sudo apt -y install ansible sshpass
+echo "Done"
+
+echo "Install newest docker-compose..."
+sudo curl -L "https://github.com/docker/compose/releases/download/1.29.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+sudo chmod +x /usr/local/bin/docker-compose
+export PATH=~/usr/local/bin:$PATH
+docker-compose --version
 echo "Done"
 
 echo "Add other nodes to known_hosts:"
@@ -24,12 +31,12 @@ echo "Set current node as haproxy node..."
 sudo docker node update --label-add haproxy=true $(hostname)
 echo "Done"
 
-echo "Install and set up weavenet docker plugin..."
-sudo docker plugin install weaveworks/net-plugin:latest_release
-sudo docker plugin disable weaveworks/net-plugin:latest_release
-sudo docker plugin set weaveworks/net-plugin:latest_release WEAVE_MULTICAST=1
-sudo docker plugin enable weaveworks/net-plugin:latest_release
-echo "Done"
+#echo "Install and set up weavenet docker plugin..."
+#sudo docker plugin install weaveworks/net-plugin:latest_release
+#sudo docker plugin disable weaveworks/net-plugin:latest_release
+#sudo docker plugin set weaveworks/net-plugin:latest_release WEAVE_MULTICAST=1
+#sudo docker plugin enable weaveworks/net-plugin:latest_release
+#echo "Done"
 
 echo "Build docker services..."
 sudo docker-compose build
@@ -43,5 +50,3 @@ echo "Deploy allezone..."
 sudo docker stack deploy --compose-file docker-compose.yml allezone 
 echo "Done"
 
-# dockerize -wait tcp://kafka:9092 -wait web://webapp:8080
-# docker network create --driver=weaveworks/net-plugin:latest_release --attachable mynetwork
