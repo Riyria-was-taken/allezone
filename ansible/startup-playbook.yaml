@@ -11,7 +11,6 @@
           update: yes
           version: easy
 
----
 - name: Aerospike setup
   hosts: aerospike
 
@@ -23,7 +22,6 @@
           register: run_aerospike
           failed_when: run_aerospike.rc > 0 and not "'is already in use by container' in command_result.stderr"
 
----
 - name: Zookeeper setup
   hosts: zookeeper 
 
@@ -35,7 +33,6 @@
           register: run_zookeeper
           failed_when: run_zookeeper.rc > 0 and not "'is already in use by container' in command_result.stderr"
      
----
 - name: Kafka setup
   hosts: kafka 
 
@@ -47,7 +44,6 @@
           register: run_kafka
           failed_when: run_kafka.rc > 0 and not "'is already in use by container' in command_result.stderr"
      
----
 - name: Server setup
   hosts: server 
 
@@ -64,7 +60,6 @@
           register: run_server
           failed_when: run_server.rc > 0 and not "'is already in use by container' in command_result.stderr"
 
----
 - name: Aggregator setup
   hosts: aggregator
   
@@ -81,7 +76,6 @@
           register: run_aggregator
           failed_when: run_aggregator.rc > 0 and not "'is already in use by container' in command_result.stderr"
 
----
 - name: HAProxy setup
   hosts: haproxy 
 
