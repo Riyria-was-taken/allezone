@@ -4,7 +4,7 @@ services:
   app_aerospike:
     image: aerospike/aerospike-server
     volumes:
-    - ./app_aerospike:/opt/aerospike/allezone
+      - ./app_aerospike:/opt/aerospike/allezone
     command:
       --config-file /opt/aerospike/allezone/aerospike.conf
       #networks:
@@ -21,13 +21,13 @@ services:
   meshworker:
     image: aerospike/aerospike-tools:latest
     volumes:
-    - ./app_aerospike:/opt/aerospike/allezone
+      - ./app_aerospike:/opt/aerospike/allezone
     entrypoint:
-    - /opt/aerospike/allezone/discovery
-    - "--servicename"
-    - app_aerospike 
-    - "-i 5"
-    - "-v"
+      - /opt/aerospike/allezone/discovery
+      - "--servicename"
+      - app_aerospike 
+      - "-i 5"
+      - "-v"
 
   app_zookeeper:
     #image: 'bitnami/zookeeper:latest'
@@ -37,7 +37,7 @@ services:
   app_kafka:
     image: bitnami/kafka:latest
     volumes:
-      ./app_kafka:/bitnami/kafka
+      - ./app_kafka:/bitnami/kafka
     deploy:
       mode: replicated
       replicas: 3
@@ -70,7 +70,7 @@ services:
       - hostnet
     privileged: true 
     volumes:
-      ./app_haproxy:/usr/local/etc/haproxy:ro
+      - ./app_haproxy:/usr/local/etc/haproxy:ro
     deploy:
       placement:
         constraints: [node.labels.haproxy == true ]

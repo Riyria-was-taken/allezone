@@ -4,6 +4,5 @@ RUN apt-get update && \
 COPY ["requirements.txt", "/tmp/requirements.txt"]
 RUN ["pip3", "install", "-r", "/tmp/requirements.txt"]
 COPY ["src/", "/opt/app_aggregator"]
-COPY ["../common/", "/opt/app_aggregator"]
 WORKDIR "/opt/app_aggregator"
 ENTRYPOINT ["python3", "main.py"]
