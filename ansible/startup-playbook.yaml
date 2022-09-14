@@ -1,45 +1,96 @@
 ---
-- name: Docker install
-  hosts: docker
+- name: Initialize files 
+  hosts: all
 
   tasks:
-     - name: Install the latest version of Docker
-       become: true
-       become_user: root
-       yum:
-             name: docker.io
-             state: latest
+     - name: Clone a github repository
+       git:
+       repo: https://github.com/Riyria-was-taken/allezone
+       dest: /home/st105
+       clone: yes
+       update: yes
 
-     - name: Create directory
-       become: true
-       ansible.builtin.file:
-              path: /etc/systemd/system/docker.service.d
-              state: directory
+---
+- name: Aerospike setup
+  hosts: aerospike
 
-     - name: Copy docker service file with owner and permissions
+  tasks:
+     - name: Run aerospike 
        become: true
-       register: service_conf
-       ansible.builtin.copy:
-             src: docker.service
-             dest: /etc/systemd/system/docker.service.d/override.conf
-             owner: root
-             group: root
-             mode: '0644'
+       command: docker run --name app_aerospike --network=host -d aerospike/aerospike-server:latest -v ./app_aerospike:/opt/aerospike/allezone --config-file /opt/aerospike/allezone/aerospike.conf
+       chdir: /home/st105/allezone
+       register: run_aerospike
+       failed_when: run_aerospike.rc > 0 and not "'is already in use by container' in command_result.stderr"
 
-     - name: Ensure the docker daemon is enabled
-       become: true
-       become_user: root
-       systemd:
-             name: docker
-             state: started
-             enabled: yes
-             daemon_reload: yes
+---
+- name: Zookeeper setup
+  hosts: zookeeper 
 
-     - name: Restart daemon on config change
+  tasks:
+     - name: Run zookeeper 
        become: true
-       become_user: root
-       systemd:
-             name: docker
-             state: restarted
-       when: service_conf.changed
+       command: docker run --name app_zookeeper --network=host -d zookeeper
+       chdir: /home/st105/allezone
+       register: run_zookeeper
+       failed_when: run_zookeeper.rc > 0 and not "'is already in use by container' in command_result.stderr"
+     
+---
+- name: Kafka setup
+  hosts: kafka 
+
+  tasks:
+     - name: Run kafka 
+       become: true
+       command: docker run --name app_kafka --network=host -d bitnami/kafka:latest -v ./app_kafka:/bitnami/kafka
+       chdir: /home/st105/allezone
+       register: run_kafka
+       failed_when: run_kafka.rc > 0 and not "'is already in use by container' in command_result.stderr"
+     
+---
+- name: Server setup
+  hosts: server 
+
+  tasks:
+     - name: Build server 
+       become: true
+       command: docker build -t app_server ./app_server
+       chdir: /home/st105/allezone
+       register: build_server
+
+     - name: Run server 
+       become: true
+       command: docker run --name app_server --network=host -d app_server
+       chdir: /home/st105/allezone
+       register: run_server
+       failed_when: run_server.rc > 0 and not "'is already in use by container' in command_result.stderr"
+
+---
+- name: Aggregator setup
+  hosts: aggregator
+  
+  tasks:
+     - name: Build aggregator 
+       become: true
+       command: docker build -t app_agregator ./app_agregator
+       chdir: /home/st105/allezone
+       register: build_aggregator
+
+     - name: Run aggregator 
+       become: true
+       command: docker run --name app_aggregator --network=host -d app_aggregator
+       chdir: /home/st105/allezone
+       register: run_aggregator
+       failed_when: run_aggregator.rc > 0 and not "'is already in use by container' in command_result.stderr"
+
+---
+- name: HAProxy setup
+  hosts: haproxy 
+
+  tasks:
+     - name: Run haproxy 
+       become: true
+       command: docker run --name app_haproxy --network=host -d haproxy:2.5 -v ./app_haproxy:/usr/local/etc/haproxy:ro
+       chdir: /home/st105/allezone
+       register: run_haproxy
+       failed_when: run_haproxy.rc > 0 and not "'is already in use by container' in command_result.stderr"
 
