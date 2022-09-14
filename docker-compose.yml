@@ -2,20 +2,32 @@ version: "3.9"
 
 services:
   app_aerospike:
-    image: 'aerospike/aerospike-server'
+    image: aerospike/aerospike-server
     volumes:
       ./app_aerospike:/opt/aerospike/allezone
     command:
       --config-file /opt/aerospike/allezone/aerospike.conf
-    networks:
-      - default
-      - hostnet
-      - multicast
+      #networks:
+      #- default
+      #- hostnet
+      #- multicast
     deploy:
       mode: replicated
       replicas: 3
+      endpoint_mode: dnsrr
       placement:
         max_replicas_per_node: 1
+
+  meshworker:
+    image: aerospike/aerospike-tools:latest
+    volumes:
+      ./app_aerospike:/opt/aerospike/allezone
+    entrypoint:
+    - /opt/aerospike/allezone/discovery
+    - "--servicename"
+    - app_aerospike 
+    - "-i 5"
+    - "-v"
 
   app_zookeeper:
     #image: 'bitnami/zookeeper:latest'
@@ -23,7 +35,7 @@ services:
     restart: always
 
   app_kafka:
-    image: 'bitnami/kafka:latest'
+    image: bitnami/kafka:latest
     volumes:
       ./app_kafka:/bitnami/kafka
     deploy:
@@ -67,12 +79,12 @@ networks:
   hostnet:
     name: host
     external: true
-  multicast:
-    #name: multicast
-    #external: true
-    driver: weaveworks/net-plugin:latest_release
-    driver_opts:
-      MULTICAST: 1
+    #multicast:
+    #  #name: multicast
+    #  #external: true
+    #  driver: weaveworks/net-plugin:latest_release
+    #  driver_opts:
+    #    MULTICAST: 1
 
       #  kafka1:
       #    - KAFKA_ADVERTISED_LISTENERS=PLAINTEXT://kafka1:9091
