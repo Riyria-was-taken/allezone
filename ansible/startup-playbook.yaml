@@ -1,6 +1,6 @@
 ---
 - name: Docker install
-  hosts: all 
+  hosts: docker
 
   tasks:
      - name: Install the latest version of Docker

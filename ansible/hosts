@@ -1,17 +1,20 @@
-[docker]
+[all]
 st105vm1[01:10].rtb-lab.pl
 
-[swarm_manager]
-st105vm101.rtb-lab.pl
-
-[swarm_nodes]
-st105vm1[02:10].rtb-lab.pl
-
 [aerospike]
-st105vm1[02:04].rtb-lab.pl
-
-[kafka]
-st105vm1[05:07].rtb-lab.pl
+st105vm1[03:05].rtb-lab.pl
 
 [zookeeper]
-st105vm106.rtb-lab.pl
+st105vm107.rtb-lab.pl
+
+[kafka]
+st105vm1[06:08].rtb-lab.pl
+
+[server]
+st105vm1[01:07].rtb-lab.pl
+
+[aggregator]
+st105vm1[08:10].rtb-lab.pl
+
+[haproxy]
+st105vm101.rtb-lab.pl
