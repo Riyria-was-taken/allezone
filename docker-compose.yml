@@ -1,49 +1,49 @@
 version: "3.9"
 
 services:
-  app_aerospike:
-    image: aerospike/aerospike-server:latest
-    volumes:
-      - ./app_aerospike:/opt/aerospike/allezone
-    command:
-      --config-file /opt/aerospike/allezone/aerospike.conf
-      #networks:
-      #- default
-      #- hostnet
-      #- multicast
-    deploy:
-      mode: replicated
-      replicas: 3
-      endpoint_mode: dnsrr
-      placement:
-        max_replicas_per_node: 1
+  #  app_aerospike:
+  #    image: aerospike/aerospike-server:latest
+  #    volumes:
+  #      - ./app_aerospike:/opt/aerospike/allezone
+  #    command:
+  #      --config-file /opt/aerospike/allezone/aerospike.conf
+  #      #networks:
+  #      #- default
+  #      #- hostnet
+  #      #- multicast
+  #    deploy:
+  #      mode: replicated
+  #      replicas: 3
+  #      endpoint_mode: dnsrr
+  #      placement:
+  #        max_replicas_per_node: 1
+  #
+  #  meshworker:
+  #    image: aerospike/aerospike-tools:latest
+  #    volumes:
+  #      - ./app_aerospike:/opt/aerospike/allezone
+  #    entrypoint:
+  #      - python2
+  #      - /opt/aerospike/allezone/discovery.py
+  #      - "--servicename"
+  #      - app_aerospike 
+  #      - "-i 5"
+  #      - "-v"
 
-  meshworker:
-    image: aerospike/aerospike-tools:latest
-    volumes:
-      - ./app_aerospike:/opt/aerospike/allezone
-    entrypoint:
-      - python2
-      - /opt/aerospike/allezone/discovery.py
-      - "--servicename"
-      - app_aerospike 
-      - "-i 5"
-      - "-v"
+  #app_zookeeper:
+  #  #image: 'bitnami/zookeeper:latest'
+  #  image: zookeeper
+  #  restart: always
 
-  app_zookeeper:
-    #image: 'bitnami/zookeeper:latest'
-    image: zookeeper
-    restart: always
-
-  app_kafka:
-    image: bitnami/kafka:latest
-    volumes:
-      - ./app_kafka:/bitnami/kafka
-    deploy:
-      mode: replicated
-      replicas: 3
-      placement:
-        max_replicas_per_node: 1
+  #app_kafka:
+  #  image: bitnami/kafka:latest
+  #  volumes:
+  #    - ./app_kafka:/bitnami/kafka
+  #  deploy:
+  #    mode: replicated
+  #    replicas: 3
+  #    placement:
+  #      max_replicas_per_node: 1
 
   app_server:
     image: 127.0.0.1:5000/app_server

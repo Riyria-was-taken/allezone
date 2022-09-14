@@ -6,3 +6,12 @@ st105vm101.rtb-lab.pl
 
 [swarm_nodes]
 st105vm1[02:10].rtb-lab.pl
+
+[aerospike]
+st105vm1[02:04].rtb-lab.pl
+
+[kafka]
+st105vm1[05:07].rtb-lab.pl
+
+[zookeeper]
+st105vm106.rtb-lab.pl

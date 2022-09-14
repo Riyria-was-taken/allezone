@@ -16,12 +16,22 @@ for i in `seq -w 01 10`; do
     echo "Done"
 done
 
-echo "Setup docker and docker swarm on all nodes:"
 cd ansible
+
+echo "Setup docker and docker swarm on all nodes:"
 ansible-playbook -i ./hosts --extra-vars "ansible_user=st105 ansible_password=$1" docker-playbook.yaml
 ansible-playbook -i ./hosts --extra-vars "ansible_user=st105 ansible_password=$1" swarm-playbook.yaml
-cd ..
 echo "Done"
+
+echo "Setup aerospike on chosen nodes:"
+ansible-playbook -i ./hosts --extra-vars "ansible_user=st105 ansible_password=$1" aerospike-playbook.yaml
+echo "Done"
+
+echo "Setup kafka and zookeeper on chosen nodes:"
+ansible-playbook -i ./hosts --extra-vars "ansible_user=st105 ansible_password=$1" kafka-playbook.yaml
+echo "Done"
+
+cd ..
 
 echo "Create local docker registry..."
 sudo docker service create --name registry -p 5000:5000 registry:2
