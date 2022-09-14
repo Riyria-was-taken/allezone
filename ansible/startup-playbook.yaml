@@ -109,8 +109,8 @@
            - docker
            - build
            - -t
-           - app_agregator
-           - ./app_agregator
+           - app_aggregator
+           - ./app_aggregator
          chdir: /home/st105/allezone
 
      - name: Run aggregator 
