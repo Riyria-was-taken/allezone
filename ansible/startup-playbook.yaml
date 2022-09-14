@@ -31,8 +31,8 @@
             - --config-file
             - /opt/aerospike/allezone/aerospike.conf
           chdir: /home/st105/allezone
-          register: run_aerospike
-          failed_when: run_aerospike.rc > 0 and not "'is already in use by container' in command_result.stderr"
+       register: run_aerospike
+       failed_when: run_aerospike.rc > 0 and not "'is already in use by container' in command_result.stderr"
 
 - name: Zookeeper setup
   hosts: zookeeper 
@@ -48,10 +48,10 @@
            - app_zookeeper
            - --network=host
            - -d
-           - zookeeper
+           - wurstmeister/zookeeper
          chdir: /home/st105/allezone
-         register: run_zookeeper
-         failed_when: run_zookeeper.rc > 0 and not "'is already in use by container' in command_result.stderr"
+       register: run_zookeeper
+       failed_when: run_zookeeper.rc > 0 and not "'is already in use by container' in command_result.stderr"
      
 - name: Kafka setup
   hosts: kafka 
@@ -70,8 +70,8 @@
            - -v
            - ./app_kafka:/bitnami/kafka
          chdir: /home/st105/allezone
-         register: run_kafka
-         failed_when: run_kafka.rc > 0 and not "'is already in use by container' in command_result.stderr"
+       register: run_kafka
+       failed_when: run_kafka.rc > 0 and not "'is already in use by container' in command_result.stderr"
      
 - name: Server setup
   hosts: server 
@@ -95,8 +95,8 @@
            - -d
            - app_server
          chdir: /home/st105/allezone
-         register: run_server
-         failed_when: run_server.rc > 0 and not "'is already in use by container' in command_result.stderr"
+       register: run_server
+       failed_when: run_server.rc > 0 and not "'is already in use by container' in command_result.stderr"
 
 - name: Aggregator setup
   hosts: aggregator
@@ -125,8 +125,8 @@
            - -d
            - app_aggregator
          chdir: /home/st105/allezone
-         register: run_aggregator
-         failed_when: run_aggregator.rc > 0 and not "'is already in use by container' in command_result.stderr"
+       register: run_aggregator
+       failed_when: run_aggregator.rc > 0 and not "'is already in use by container' in command_result.stderr"
 
 - name: HAProxy setup
   hosts: haproxy 
@@ -146,6 +146,6 @@
            - -v
            - ./app_haproxy:/usr/local/etc/haproxy:ro
          chdir: /home/st105/allezone
-         register: run_haproxy
-         failed_when: run_haproxy.rc > 0 and not "'is already in use by container' in command_result.stderr"
+       register: run_haproxy
+       failed_when: run_haproxy.rc > 0 and not "'is already in use by container' in command_result.stderr"
 
