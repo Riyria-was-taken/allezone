@@ -9,6 +9,7 @@
        dest: /home/st105
        clone: yes
        update: yes
+       version: easy
 
 ---
 - name: Aerospike setup
