@@ -3,30 +3,41 @@
   hosts: aerospike
 
   tasks:
-     - name: Download and extract Aerospike Community Version installation package 
+     - name: Download Aerospike Community Version installation package 
        become: true
        become_user: st105
-       ansible.builtin.unarchive:
-             src: https://download.aerospike.com/download/server/latest/artifact/ubuntu20
-             dest: /tmp
-             remote_src: yes
-             extra_opts:
-               - xzvf
+       ansible.builtin.get_url:
+             url: https://download.aerospike.com/download/server/latest/artifact/ubuntu20
+             dest: /tmp/aerospike.tar.gz
+     
+     - name: Extract installation package 
+       become: true
+       become_user: st105
+       ansible.builtin.command:
+              argv:
+                - tar
+                - xzvf
+                - aerospike.tar.gz
+              chdir: /tmp/
 
      - name: Install server 
        become: true
        become_user: root 
-       ansible.builtin.shell:
-              chdir: /tmp/aerospike-server-community-5.7.0.16-ubuntu20.04/
-              cmd: ./asinstall
+       ansible.builtin.command:
+              argv:
+                - ./asinstall
+              chdir: /tmp/aerospike-server-community-6.1.0.1-ubuntu20.04/
 
      - name: Create logging directory
+       become: true
+       become_user: root
        ansible.builtin.file:
               path: /var/log/aerospike 
               state: directory
 
      - name: Copy config file 
        become: true
+       become_user: root
        register: service_conf
        ansible.builtin.copy:
              src: ../app_aerospike/aerospike.conf
