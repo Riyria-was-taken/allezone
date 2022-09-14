@@ -3,7 +3,7 @@ from fastapi.responses import HTMLResponse
 import aerospike
 from custom_types import *
 import sys
-from config import aerospike_hosts, kafka_hosts, kafka_topic
+from config import *
 from kafka import KafkaProducer
 import jsonpickle
 from dateutil.parser import parse

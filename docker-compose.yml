@@ -1,0 +1,119 @@
+version: "3.9"
+
+services:
+  app_aerospike:
+    image: 'aerospike/aerospike-server'
+    volumes:
+      ./app_aerospike:/opt/aerospike/allezone
+    command:
+      --config-file /opt/aerospike/allezone/aerospike.conf
+    networks:
+      - default
+      - hostnet
+      - multicast
+    deploy:
+      mode: replicated
+      replicas: 3
+      placement:
+        max_replicas_per_node: 1
+
+  app_zookeeper:
+    #image: 'bitnami/zookeeper:latest'
+    image: zookeeper
+    restart: always
+
+  app_kafka:
+    image: 'bitnami/kafka:latest'
+    volumes:
+      ./app_kafka:/bitnami/kafka
+    deploy:
+      mode: replicated
+      replicas: 3
+      placement:
+        max_replicas_per_node: 1
+
+  app_server:
+    image: 127.0.0.1:5000/app_server
+    build: ./app_server
+    ports:
+      - "8000:8000"
+    deploy:
+      mode: replicated
+      replicas: 7
+      placement:
+        max_replicas_per_node: 1
+
+  app_aggregator:
+    image: 127.0.0.1:5000/app_aggregator
+    build: ./app_aggregator
+    deploy:
+      mode: replicated
+      replicas: 3
+      placement:
+        max_replicas_per_node: 1
+  
+  app_haproxy:
+    image: haproxy:2.5 
+    networks:
+      - hostnet
+    privileged: true 
+    volumes:
+      ./app_haproxy:/usr/local/etc/haproxy:ro
+    deploy:
+      placement:
+        constraints: [node.labels.haproxy == true ]
+
+networks:
+  hostnet:
+    name: host
+    external: true
+  multicast:
+    #name: multicast
+    #external: true
+    driver: weaveworks/net-plugin:latest_release
+    driver_opts:
+      MULTICAST: 1
+
+      #  kafka1:
+      #    - KAFKA_ADVERTISED_LISTENERS=PLAINTEXT://kafka1:9091
+      #    - KAFKA_LISTENERS=PLAINTEXT://0.0.0.0:9091
+      #    - KAFKA_ZOOKEEPER_CONNECT=zookeeper:2181
+      #    - KAFKA_BROKER_ID=1
+      #    - BOOTSTRAP_SERVERS=kafka1:9091,kafka2:9092,kafka3:9093,kafka4:9094,kafka5:9095
+      #  kafka2:
+      #    - KAFKA_ADVERTISED_LISTENERS=PLAINTEXT://kafka2:9092
+      #    - KAFKA_LISTENERS=PLAINTEXT://0.0.0.0:9092
+      #    - KAFKA_ZOOKEEPER_CONNECT=zookeeper:2181
+      #    - KAFKA_BROKER_ID=2
+      #    - BOOTSTRAP_SERVERS=kafka1:9091,kafka2:9092,kafka3:9093,kafka4:9094,kafka5:9095
+      #      i
+      #
+      #version: "2"
+      #
+      #services:
+      #  zookeeper:
+      #    image: docker.io/bitnami/zookeeper:3.8
+      #    ports:
+      #      - "2181:2181"
+      #    volumes:
+      #      - "zookeeper_data:/bitnami"
+      #    environment:
+      #      - ALLOW_ANONYMOUS_LOGIN=yes
+      #  kafka:
+      #    image: docker.io/bitnami/kafka:3.2
+      #    ports:
+      #      - "9092:9092"
+      #    volumes:
+      #      - "kafka_data:/bitnami"
+      #    environment:
+      #      - KAFKA_CFG_ZOOKEEPER_CONNECT=app_zookeeper:2181
+      #      - ALLOW_PLAINTEXT_LISTENER=yes
+      #    depends_on:
+      #      - zookeeper
+      #
+      #volumes:
+      #  zookeeper_data:
+      #    driver: local
+      #  kafka_data:
+      #    driver: local
+      #
