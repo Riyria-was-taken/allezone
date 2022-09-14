@@ -1,89 +1,93 @@
----
-- name: Initialize files 
+- name: Initialize files
   hosts: all
-
   tasks:
-     - name: Clone a github repository
-       git:
-          repo: https://github.com/Riyria-was-taken/allezone
-          dest: /home/st105
-          clone: yes
-          update: yes
-          version: easy
-
+    - name: Clone a github repository
+      git:
+        repo: 'https://github.com/Riyria-was-taken/allezone'
+        dest: /home/st105
+        clone: 'yes'
+        update: 'yes'
+        version: easy
 - name: Aerospike setup
   hosts: aerospike
-
   tasks:
-     - name: Run aerospike 
-       become: true
-       command: docker run --name app_aerospike --network=host -d aerospike/aerospike-server:latest -v ./app_aerospike:/opt/aerospike/allezone --config-file /opt/aerospike/allezone/aerospike.conf
-          chdir: /home/st105/allezone
-          register: run_aerospike
-          failed_when: run_aerospike.rc > 0 and not "'is already in use by container' in command_result.stderr"
-
+    - name: Run aerospike
+      become: true
+      command: >-
+        docker run --name app_aerospike --network=host -d
+        aerospike/aerospike-server:latest -v
+        ./app_aerospike:/opt/aerospike/allezone --config-file
+        /opt/aerospike/allezone/aerospike.conf
+      chdir: /home/st105/allezone
+      register: run_aerospike
+      failed_when: >-
+        run_aerospike.rc > 0 and not "'is already in use by container' in
+        command_result.stderr"
 - name: Zookeeper setup
-  hosts: zookeeper 
-
+  hosts: zookeeper
   tasks:
-     - name: Run zookeeper 
-       become: true
-       command: docker run --name app_zookeeper --network=host -d zookeeper
-          chdir: /home/st105/allezone
-          register: run_zookeeper
-          failed_when: run_zookeeper.rc > 0 and not "'is already in use by container' in command_result.stderr"
-     
+    - name: Run zookeeper
+      become: true
+      command: docker run --name app_zookeeper --network=host -d zookeeper
+      chdir: /home/st105/allezone
+      register: run_zookeeper
+      failed_when: >-
+        run_zookeeper.rc > 0 and not "'is already in use by container' in
+        command_result.stderr"
 - name: Kafka setup
-  hosts: kafka 
-
+  hosts: kafka
   tasks:
-     - name: Run kafka 
-       become: true
-       command: docker run --name app_kafka --network=host -d bitnami/kafka:latest -v ./app_kafka:/bitnami/kafka
-          chdir: /home/st105/allezone
-          register: run_kafka
-          failed_when: run_kafka.rc > 0 and not "'is already in use by container' in command_result.stderr"
-     
+    - name: Run kafka
+      become: true
+      command: >-
+        docker run --name app_kafka --network=host -d bitnami/kafka:latest -v
+        ./app_kafka:/bitnami/kafka
+      chdir: /home/st105/allezone
+      register: run_kafka
+      failed_when: >-
+        run_kafka.rc > 0 and not "'is already in use by container' in
+        command_result.stderr"
 - name: Server setup
-  hosts: server 
-
+  hosts: server
   tasks:
-     - name: Build server 
-       become: true
-       command: docker build -t app_server ./app_server
-          chdir: /home/st105/allezone
-
-     - name: Run server 
-       become: true
-       command: docker run --name app_server --network=host -d app_server
-          chdir: /home/st105/allezone
-          register: run_server
-          failed_when: run_server.rc > 0 and not "'is already in use by container' in command_result.stderr"
-
+    - name: Build server
+      become: true
+      command: docker build -t app_server ./app_server
+      chdir: /home/st105/allezone
+    - name: Run server
+      become: true
+      command: docker run --name app_server --network=host -d app_server
+      chdir: /home/st105/allezone
+      register: run_server
+      failed_when: >-
+        run_server.rc > 0 and not "'is already in use by container' in
+        command_result.stderr"
 - name: Aggregator setup
   hosts: aggregator
-  
   tasks:
-     - name: Build aggregator 
-       become: true
-       command: docker build -t app_agregator ./app_agregator
-          chdir: /home/st105/allezone
-
-     - name: Run aggregator 
-       become: true
-       command: docker run --name app_aggregator --network=host -d app_aggregator
-          chdir: /home/st105/allezone
-          register: run_aggregator
-          failed_when: run_aggregator.rc > 0 and not "'is already in use by container' in command_result.stderr"
-
+    - name: Build aggregator
+      become: true
+      command: docker build -t app_agregator ./app_agregator
+      chdir: /home/st105/allezone
+    - name: Run aggregator
+      become: true
+      command: docker run --name app_aggregator --network=host -d app_aggregator
+      chdir: /home/st105/allezone
+      register: run_aggregator
+      failed_when: >-
+        run_aggregator.rc > 0 and not "'is already in use by container' in
+        command_result.stderr"
 - name: HAProxy setup
-  hosts: haproxy 
-
+  hosts: haproxy
   tasks:
-     - name: Run haproxy 
-       become: true
-       command: docker run --name app_haproxy --network=host -d haproxy:2.5 -v ./app_haproxy:/usr/local/etc/haproxy:ro
-          chdir: /home/st105/allezone
-          register: run_haproxy
-          failed_when: run_haproxy.rc > 0 and not "'is already in use by container' in command_result.stderr"
+    - name: Run haproxy
+      become: true
+      command: >-
+        docker run --name app_haproxy --network=host -d haproxy:2.5 -v
+        ./app_haproxy:/usr/local/etc/haproxy:ro
+      chdir: /home/st105/allezone
+      register: run_haproxy
+      failed_when: >-
+        run_haproxy.rc > 0 and not "'is already in use by container' in
+        command_result.stderr"
 
