@@ -64,7 +64,7 @@
        become_user: root
        ansible.builtin.file:
               path: /usr/local/bin/docker-compose
-              mode: "+x"
+              mode: "a+x"
      
      - name: Add path update to .bashrc 
        lineinfile:
