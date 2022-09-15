@@ -24,10 +24,10 @@
             - --name
             - app_aerospike
             - --network=host
-            - -d
-            - aerospike/aerospike-server:latest
             - -v
             - "{{ ansible_env.HOME }}/allezone/app_aerospike:/opt/aerospike/allezone"
+            - -d
+            - aerospike/aerospike-server:latest
             - --config-file
             - /opt/aerospike/allezone/aerospike.conf
           chdir: ~/allezone
@@ -136,10 +136,10 @@
            - --name
            - app_haproxy
            - --network=host
+           - -v
+           - "{{ ansible_env.HOME }}/allezone/app_haproxy:/usr/local/etc/haproxy:ro"
            - -d
            - haproxy:2.5
-           - -v
-           - ~/allezone/app_haproxy:/usr/local/etc/haproxy:ro
          chdir: ~/allezone
        register: run_haproxy
        failed_when: run_haproxy.rc > 0 and not "'is already in use by container' in command_result.stderr"
