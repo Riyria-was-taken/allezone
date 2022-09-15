@@ -69,6 +69,6 @@
      - name: Add path update to .bashrc 
        lineinfile:
               path: ~/.bashrc
-              search_string: "export PATH=~/usr/local/bin:$PATH"
+              line: "export PATH=~/usr/local/bin:$PATH"
               state: present
 
