@@ -1,4 +1,4 @@
-[all]
+[all_hosts]
 st105vm1[01:10].rtb-lab.pl
 
 [aerospike]

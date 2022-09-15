@@ -1,22 +1,26 @@
 ---
 - name: Stop and clean all containers 
-  hosts: all
+  hosts: all_hosts
 
   tasks:
      - name: get containers
        become: true
        become_user: root
-       shell: docker ps -q 
+       shell: docker ps -a -q 
        register: containers
 
      - name: docker stop 
        become: true
        become_user: root
-       shell: docker stop "{{ item }}"
-       with_items: "{{ containers.stdout_lines }}"
+       shell: docker stop {{ containers.stdout | regex_replace('\n', ' ') }}
+
+     - name: get containers
+       become: true
+       become_user: root
+       shell: docker ps -a -q 
+       register: containers
 
      - name: docker rm
        become: true
        become_user: root
-       shell: docker rm "{{ item }}"
-       with_items: "{{ containers.stdout_lines }}"
+       shell: docker rm {{ containers.stdout | regex_replace('\n', ' ') }}
