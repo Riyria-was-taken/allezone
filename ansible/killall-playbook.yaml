@@ -4,6 +4,8 @@
 
   tasks:
      - name: docker stop 
+       become: true
+       become_user: root
        command:
           argv:
             - docker
@@ -11,6 +13,8 @@
             - $(docker ps -a -q) 
 
      - name: docker rm
+       become: true
+       become_user: root
        command:
           argv:
             - docker
