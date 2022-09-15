@@ -10,7 +10,7 @@ services:
     image: wurstmeister/kafka:latest
     network_mode: "host"
     environment:
-      HOSTNAME_COMMAND: "hostname"
+      HOSTNAME_COMMAND: "$(hostname).rtb-lab.pl"
       KAFKA_ZOOKEEPER_CONNECT: 10.112.105.107:2181
       KAFKA_CREATE_TOPICS: user_tags:3:2
       KAFKA_PORT: 9092
