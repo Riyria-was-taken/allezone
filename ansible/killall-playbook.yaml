@@ -13,6 +13,7 @@
        become: true
        become_user: root
        shell: docker stop {{ containers.stdout | regex_replace('\n', ' ') }}
+       ignore_errors: yes
 
      - name: docker container prune 
        become: true
