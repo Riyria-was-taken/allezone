@@ -3,7 +3,7 @@
   hosts: all
 
   tasks:
-     - name: Clone a github repository
+     - name: Clone github repository
        git:
           repo: https://github.com/Riyria-was-taken/allezone
           dest: ~/allezone
@@ -30,7 +30,7 @@
             - aerospike/aerospike-server:latest
             - --config-file
             - /opt/aerospike/allezone/aerospike.conf
-          chdir: ~/allezone
+          chdir: "{{ ansible_env.HOME }}/allezone"
        register: run_aerospike
        failed_when: run_aerospike.rc > 0 and not "'is already in use by container' in command_result.stderr"
 
@@ -49,7 +49,7 @@
            - --network=host
            - -d
            - wurstmeister/zookeeper
-         chdir: ~/allezone
+         chdir: "{{ ansible_env.HOME }}/allezone"
        register: run_zookeeper
        failed_when: run_zookeeper.rc > 0 and not "'is already in use by container' in command_result.stderr"
      
@@ -64,7 +64,7 @@
            - docker-compose
            - up
            - -d
-         chdir: ~/allezone/app_kafka
+         chdir: "{{ ansible_env.HOME }}/allezone/app_kafka"
        register: run_kafka
        failed_when: run_kafka.rc > 0 and not "'is already in use by container' in command_result.stderr"
      
@@ -76,7 +76,7 @@
        become: true
        command:
          cmd: docker build -t app_server ./app_server
-         chdir: ~/allezone
+         chdir: "{{ ansible_env.HOME }}/allezone"
 
      - name: Run server 
        become: true
@@ -89,7 +89,7 @@
            - --network=host
            - -d
            - app_server
-         chdir: ~/allezone
+         chdir: "{{ ansible_env.HOME }}/allezone"
        register: run_server
        failed_when: run_server.rc > 0 and not "'is already in use by container' in command_result.stderr"
 
@@ -106,7 +106,7 @@
            - -t
            - app_aggregator
            - ./app_aggregator
-         chdir: ~/allezone
+         chdir: "{{ ansible_env.HOME }}/allezone"
 
      - name: Run aggregator 
        become: true
@@ -119,7 +119,7 @@
            - --network=host
            - -d
            - app_aggregator
-         chdir: ~/allezone
+         chdir: "{{ ansible_env.HOME }}/allezone"
        register: run_aggregator
        failed_when: run_aggregator.rc > 0 and not "'is already in use by container' in command_result.stderr"
 
@@ -140,7 +140,7 @@
            - "{{ ansible_env.HOME }}/allezone/app_haproxy:/usr/local/etc/haproxy:ro"
            - -d
            - haproxy:2.5
-         chdir: ~/allezone
+         chdir: "{{ ansible_env.HOME }}/allezone"
        register: run_haproxy
        failed_when: run_haproxy.rc > 0 and not "'is already in use by container' in command_result.stderr"
 
