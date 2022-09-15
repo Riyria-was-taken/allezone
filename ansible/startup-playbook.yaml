@@ -61,16 +61,10 @@
        become: true
        command:
          argv:
-           - docker
-           - run
-           - --name
-           - app_kafka
-           - --network=host
+           - docker-compose
+           - up
            - -d
-           - bitnami/kafka:latest
-           - -v
-           - ./app_kafka:/bitnami/kafka
-         chdir: /home/st105/allezone
+         chdir: /home/st105/allezone/app_kafka
        register: run_kafka
        failed_when: run_kafka.rc > 0 and not "'is already in use by container' in command_result.stderr"
      

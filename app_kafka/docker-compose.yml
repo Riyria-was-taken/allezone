@@ -1,0 +1,17 @@
+version: '3.2'
+
+services:
+   app_kafka:
+      image: wurstmeister/kafka:latest
+      network_mode: "host"
+      environment:
+         HOSTNAME_COMMAND: "docker info | grep ^Name: | cut -d' ' -f 2"
+         KAFKA_ZOOKEEPER_CONNECT: st105vm107.rtb-lab.pl:2181
+         KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: INSIDE:PLAINTEXT,OUTSIDE:PLAINTEXT
+         KAFKA_ADVERTISED_PROTOCOL_NAME: OUTSIDE
+         KAFKA_ADVERTISED_PORT: 9094
+         KAFKA_PROTOCOL_NAME: INSIDE
+         KAFKA_PORT: 9092
+         KAFKA_CREATE_TOPICS: user_tags:3:2
+      volumes:
+         - /var/run/docker.sock:/var/run/docker.sock
