@@ -6,7 +6,7 @@
      - name: Clone a github repository
        git:
           repo: https://github.com/Riyria-was-taken/allezone
-          dest: /allezone
+          dest: ~/allezone
           clone: yes
           update: yes
           version: easy
@@ -64,7 +64,7 @@
            - docker-compose
            - up
            - -d
-         chdir: /allezone/app_kafka
+         chdir: ~/allezone/app_kafka
        register: run_kafka
        failed_when: run_kafka.rc > 0 and not "'is already in use by container' in command_result.stderr"
      
@@ -89,7 +89,7 @@
            - --network=host
            - -d
            - app_server
-         chdir: /allezone
+         chdir: ~/allezone
        register: run_server
        failed_when: run_server.rc > 0 and not "'is already in use by container' in command_result.stderr"
 
@@ -106,7 +106,7 @@
            - -t
            - app_aggregator
            - ./app_aggregator
-         chdir: /allezone
+         chdir: ~/allezone
 
      - name: Run aggregator 
        become: true
@@ -119,7 +119,7 @@
            - --network=host
            - -d
            - app_aggregator
-         chdir: /allezone
+         chdir: ~/allezone
        register: run_aggregator
        failed_when: run_aggregator.rc > 0 and not "'is already in use by container' in command_result.stderr"
 
@@ -140,7 +140,7 @@
            - haproxy:2.5
            - -v
            - ~/allezone/app_haproxy:/usr/local/etc/haproxy:ro
-         chdir: /allezone
+         chdir: ~/allezone
        register: run_haproxy
        failed_when: run_haproxy.rc > 0 and not "'is already in use by container' in command_result.stderr"
 
