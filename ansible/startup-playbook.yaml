@@ -42,14 +42,10 @@
        become: true
        command:
          argv:
-           - docker
-           - run
-           - --name
-           - app_zookeeper
-           - --network=host
+           - docker-compose
+           - up
            - -d
-           - wurstmeister/zookeeper
-         chdir: "{{ ansible_env.HOME }}/allezone"
+         chdir: "{{ ansible_env.HOME }}/allezone/app_kafka"
        register: run_zookeeper
        failed_when: run_zookeeper.rc > 0 and not "'is already in use by container' in command_result.stderr"
      
@@ -64,6 +60,7 @@
            - docker-compose
            - up
            - -d
+           - app_kafka
          chdir: "{{ ansible_env.HOME }}/allezone/app_kafka"
        register: run_kafka
        failed_when: run_kafka.rc > 0 and not "'is already in use by container' in command_result.stderr"

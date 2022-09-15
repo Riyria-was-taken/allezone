@@ -14,6 +14,7 @@ services:
       KAFKA_ZOOKEEPER_CONNECT: 10.112.105.107:2181
       KAFKA_CREATE_TOPICS: user_tags:3:2
       KAFKA_ADVERTISED_PORT: 9094
+      KAFKA_ADVERTISED_HOST_NAME: 10.112.105.107
       KAFKA_PORT: 9092
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
