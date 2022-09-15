@@ -14,7 +14,7 @@
        become_user: root
        shell: docker stop {{ containers.stdout | regex_replace('\n', ' ') }}
 
-     - name: docker container purge 
+     - name: docker container prune 
        become: true
        become_user: root
-       shell: docker container purge
+       shell: docker container prune
