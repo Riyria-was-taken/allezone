@@ -11,8 +11,4 @@
      - name: docker rm
        become: true
        become_user: root
-       command:
-          argv:
-            - docker
-            - rm
-            - $(docker ps -a -q) 
+       shell: docker rm $(docker ps -a -q) 
