@@ -17,4 +17,4 @@
      - name: docker container prune 
        become: true
        become_user: root
-       shell: docker container prune
+       shell: docker container prune -f
