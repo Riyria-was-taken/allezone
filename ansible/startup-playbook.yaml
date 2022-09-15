@@ -27,7 +27,7 @@
             - -d
             - aerospike/aerospike-server:latest
             - -v
-            - {{ansible_env.HOME}}/allezone/app_aerospike:/opt/aerospike/allezone
+            - "{{ ansible_env.HOME }}"/allezone/app_aerospike:/opt/aerospike/allezone
             - --config-file
             - /opt/aerospike/allezone/aerospike.conf
           chdir: ~/allezone
