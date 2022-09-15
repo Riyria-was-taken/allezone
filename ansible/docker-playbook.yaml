@@ -61,6 +61,7 @@
      
      - name: Make docker-compose executable 
        become: true
+       become_user: root
        ansible.builtin.file:
               path: /usr/local/bin/docker-compose
               attributes: +x
