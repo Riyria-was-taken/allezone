@@ -12,9 +12,11 @@
      - name: docker stop 
        become: true
        become_user: root
-       shell: docker stop "{{ containers.stdout_lines }}"
+       shell: docker stop "{{ item }}"
+       with_items: "{{ containers.stdout_lines }}"
 
      - name: docker rm
        become: true
        become_user: root
-       shell: docker rm "{{ containers.stdout_lines }}"
+       shell: docker rm "{{ item }}"
+       with_items: "{{ containers.stdout_lines }}"
