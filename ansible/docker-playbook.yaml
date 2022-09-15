@@ -56,7 +56,7 @@
      - name: Download newest docker-compose 
        become: true
        ansible.builtin.get_url:
-             url: https://github.com/docker/compose/releases/download/1.29.2/docker-compose-"{{uname_s.stdout}}"-"{{uname_m.stdout}}"
+             url: https://github.com/docker/compose/releases/download/1.29.2/docker-compose-{{uname_s.stdout}}-{{uname_m.stdout}}
              dest: /usr/local/bin/docker-compose
      
      - name: Make docker-compose executable 
