@@ -6,11 +6,7 @@
      - name: docker stop 
        become: true
        become_user: root
-       command:
-          argv:
-            - docker
-            - stop
-            - $(docker ps -a -q) 
+       shell: docker stop $(docker ps -a -q) 
 
      - name: docker rm
        become: true
