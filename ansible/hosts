@@ -2,13 +2,13 @@
 st105vm1[01:10].rtb-lab.pl
 
 [aerospike]
-st105vm1[03:05].rtb-lab.pl
+st105vm1[02:07].rtb-lab.pl
 
 [zookeeper]
-st105vm107.rtb-lab.pl
+st105vm109.rtb-lab.pl
 
 [kafka]
-st105vm1[06:08].rtb-lab.pl
+st105vm1[08:10].rtb-lab.pl
 
 [server]
 st105vm1[01:07].rtb-lab.pl
