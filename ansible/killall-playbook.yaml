@@ -6,7 +6,7 @@
      - name: get containers
        become: true
        become_user: root
-       shell: docker ps -a -q 
+       shell: docker ps -q 
        register: containers
 
      - name: docker stop 
